@@ -20,3 +20,7 @@ func NewSupabaseDB() (*pgx.Conn, error) {
 	}
 	return conn, nil
 }
+
+func GetSecretKey() string {
+	return os.Getenv("SECRET_KEY")
+}

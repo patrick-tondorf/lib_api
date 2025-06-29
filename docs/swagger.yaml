@@ -454,6 +454,44 @@ paths:
       summary: Create a new user
       tags:
       - users
+  /users/{email}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve user details by email
+      parameters:
+      - description: User email
+        example: '"user@example.com"'
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user by email
+      tags:
+      - users
 securityDefinitions:
   BearerAuth:
     description: 'JWT Authorization header using the Bearer scheme. Example: "Bearer

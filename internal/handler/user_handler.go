@@ -83,7 +83,7 @@ func isValidEmail(email string) bool {
 	return strings.Contains(email, "@") && strings.Contains(email, ".")
 }
 
-// AuthenticateUser godoc
+// User godoc
 // @Summary Authenticate a user
 // @Description Authenticate user and return JWT token
 // @Tags auth
@@ -180,4 +180,36 @@ func (h *UserHandler) AuthenticateUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response)
+}
+
+// User godoc
+// @Summary Get user by email
+// @Description Retrieve user details by email
+// @Tags users
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param email path string true "User email" example("user@example.com")// @Success 200 {object} domain.User
+// @Failure 400 {object} UserListResponse
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /users/{email} [get]
+func (h *UserHandler) GetUserByEmail(c *gin.Context) {
+	email := c.Param("email")
+	if email == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Email parameter is required"})
+		return
+	}
+
+	user, err := h.repo.GetUserByEmail(c.Request.Context(), email)
+	if err != nil {
+		if strings.Contains(err.Error(), "user not found") {
+			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve user"})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
 }

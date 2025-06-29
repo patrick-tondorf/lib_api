@@ -65,6 +65,9 @@ func SetupRouter(db *pgx.Conn) *gin.Engine {
 	protected := r.Group("/api")
 	protected.Use(auth.AuthMiddleware(secret))
 	{
+
+		//user routes
+		protected.GET("/users/:email", userHandler.GetUserByEmail)
 		// Book routes
 		protected.POST("/books", bookHandler.CreateBook)
 		protected.GET("/books", bookHandler.GetBooks)

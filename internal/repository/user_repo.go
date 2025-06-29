@@ -41,7 +41,7 @@ func (repo *UserRepository) CreateUser(ctx context.Context, user domain.User) er
 func (repo *UserRepository) GetUserByEmail(ctx context.Context, email string) (*domain.User, error) {
 	row := repo.db.QueryRow(
 		ctx,
-		`SELECT id, email, password_hash, created_at, updated_at 
+		`SELECT id,uuid, email, password_hash, created_at, updated_at 
          FROM users 
          WHERE email = $1`,
 		email,
@@ -50,8 +50,9 @@ func (repo *UserRepository) GetUserByEmail(ctx context.Context, email string) (*
 	var user domain.User
 	err := row.Scan(
 		&user.ID,
+		&user.UUID,
 		&user.Email,
-		&user.PasswordHash, // Agora pegando o hash, não a senha em texto puro
+		&user.PasswordHash,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	)
